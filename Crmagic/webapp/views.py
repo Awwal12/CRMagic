@@ -17,14 +17,12 @@ def login_user(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            print('here')
             login(request, user)
             messages.success(request, 'You are now logged in')
             return render(request, 'home.html')
         print('not here')
         messages.success(request, 'Username or Password is incorrect')
         return render(request, 'login.html')
-    print('not here2')
     return render(request, 'login.html')
 
 
