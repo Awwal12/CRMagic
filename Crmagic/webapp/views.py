@@ -59,3 +59,10 @@ def register_user(request):
 def customer_record(request, pk):
     customer_record = Record.objects.get(id=pk)
     return render(request, 'c_record.html', {'customer_record': customer_record})
+
+@login_required(login_url='webapp:login_user')
+def delete_record(request, pk):
+    delete_it = Record.objects.get(id=pk)
+    delete_it.delete()
+    messages.success(request, 'Record Deleted Successfully')
+    return redirect('webapp:home')
