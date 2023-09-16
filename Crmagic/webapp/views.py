@@ -77,3 +77,13 @@ def add_record(request):
             messages.success(request, "Record Added Successfully")
             return redirect('webapp:home')
     return render(request, 'add_record.html', {'form':form})
+
+@login_required(login_url='webapp:login_user')
+def update_record(request, pk):
+    current_record = Record.objects.get(id=pk)
+    form = AddRecordForm(request.POST or None, instance=current_record)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Record Updated Successfully")
+        return redirect('webapp:home')
+    return render(request, 'update_record.html', {'form':form})
