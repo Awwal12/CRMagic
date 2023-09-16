@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm
+from .forms import SignUpForm, AddRecordForm
 from .models import Record
 # Create your views here.
 
@@ -60,9 +60,20 @@ def customer_record(request, pk):
     customer_record = Record.objects.get(id=pk)
     return render(request, 'c_record.html', {'customer_record': customer_record})
 
+
 @login_required(login_url='webapp:login_user')
 def delete_record(request, pk):
     delete_it = Record.objects.get(id=pk)
     delete_it.delete()
     messages.success(request, 'Record Deleted Successfully')
     return redirect('webapp:home')
+
+@login_required(login_url='webapp:login_user')
+def add_record(request):
+    form = AddRecordForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            add_record= form.save()
+            messages.success(request, "Record Added Successfully")
+            return redirect('webapp:home')
+    return render(request, 'add_record.html', {'form':form})
