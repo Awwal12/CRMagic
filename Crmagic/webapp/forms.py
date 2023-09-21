@@ -57,3 +57,4 @@ class AddRecordForm(forms.ModelForm):
     class Meta:
         model = Record
         exclude = ("user, ",)
+        fields = ['first_name', 'last_name', 'email', 'address', 'phone', 'city', 'state', 'zipcode']

@@ -9,7 +9,7 @@ from .models import Record
 
 @login_required(login_url='webapp:login_user')
 def home(request):
-    records = Record.objects.all()
+    records = Record.objects.filter(creator=request.user)
     return render(request, 'home.html', {'records': records})
 
 
@@ -68,15 +68,19 @@ def delete_record(request, pk):
     messages.success(request, 'Record Deleted Successfully')
     return redirect('webapp:home')
 
+
 @login_required(login_url='webapp:login_user')
 def add_record(request):
     form = AddRecordForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
-            add_record= form.save()
+            add_record = form.save(commit=False)
+            add_record.creator = request.user
+            add_record.save()
             messages.success(request, "Record Added Successfully")
             return redirect('webapp:home')
-    return render(request, 'add_record.html', {'form':form})
+    return render(request, 'add_record.html', {'form': form})
+
 
 @login_required(login_url='webapp:login_user')
 def update_record(request, pk):
@@ -86,4 +90,4 @@ def update_record(request, pk):
         form.save()
         messages.success(request, "Record Updated Successfully")
         return redirect('webapp:home')
-    return render(request, 'update_record.html', {'form':form})
+    return render(request, 'update_record.html', {'form': form})
